@@ -28,6 +28,7 @@ class ItemController extends Controller
     public function create()
     {
         //
+        return view('items.create');
     }
 
     /**
@@ -38,7 +39,19 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Validate data item before goes in database
+        $this->validate($request,[
+            'title' =>'required|max:255' ,
+            'description'=>'required:max:5000'
+        ]);
+
+        //Insert the item into database
+        $item = new item();
+        $item->title = $request->title;
+        $item->description = $request->description;
+
+        $item->save();
+        return redirect()->route("items.index");
     }
 
     /**
