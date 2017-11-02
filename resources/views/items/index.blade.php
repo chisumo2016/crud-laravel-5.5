@@ -1,6 +1,10 @@
 @extends('layouts.master')
 
 @section('content')
+
+    @if(Session::has('success'))
+        <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em> {!! session('success') !!}</em></div>
+    @endif
     <br><br>
    <div class="row">
        <div class="col-lg-6 margin-tb">
@@ -37,9 +41,11 @@
                   <th>{{ $item->updated_at }}</th>
                   <th>
                       <td>
-                      <a href="#" class="btn btn-info">Show</a>
-                      <a href="#" class="btn btn-primary">Edit</a>
-                      <a href="#" class="btn btn-danger">Delete</a>
+                      <a href="{{ route('items.show',$item->id) }}" class="btn btn-info" >Show</a>
+                      <a href="{{ route('items.edit',$item->id) }}" class="btn btn-primary">Edit</a>
+                        {!! Form::open(['method' =>'DELETE', 'action'=> ['ItemController@destroy',$item->id], 'style'=> 'display:inline'])     !!}
+                              {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                         {!! Form::close() !!}
                      </td>
 
                   </th>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Item;
+use Session;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -51,6 +52,8 @@ class ItemController extends Controller
         $item->description = $request->description;
 
         $item->save();
+
+        Session::flash('success','Item has been created successfully.');
         return redirect()->route("items.index");
     }
 
@@ -63,6 +66,9 @@ class ItemController extends Controller
     public function show($id)
     {
         //
+        $item = Item::find($id);
+        return view ('items.show',['item'=>$item]);
+
     }
 
     /**
@@ -73,7 +79,9 @@ class ItemController extends Controller
      */
     public function edit($id)
     {
-        //
+        //Update the Items  in the database
+        $item = Item::find($id);
+        return view('items.update', ['item'=>$item]);
     }
 
     /**
@@ -85,7 +93,24 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Update the Items
+
+        $item = Item::find($id);
+
+        //Validate data item before goes in database
+        $this->validate($request,[
+            'title' =>'required|max:255' ,
+            'description'=>'required|max:5000'
+        ]);
+
+        //Update the field
+        $item->title = $request->title;
+        $item->description = $request->description;
+
+
+        $item->update();
+        Session::flash('success','Item has been Updated successfully.');
+        return redirect()->route('items.index');
     }
 
     /**
@@ -97,5 +122,8 @@ class ItemController extends Controller
     public function destroy($id)
     {
         //
+        Item::find($id)->delete();
+        Session::flash('success','Item has been deleted successfully.');
+        return redirect()->route('items.index');
     }
 }
